@@ -56,4 +56,5 @@ body {
 
 .boton:active {
     background-color: rgba(116, 116, 116, 0.719);
+    transform: scale(1.01);
 }
