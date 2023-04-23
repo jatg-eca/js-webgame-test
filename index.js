@@ -13,11 +13,11 @@ const initCanvas = () => {
     let ctxWidth = ctx.canvas.width;
     let ctxHeight = ctx.canvas.height;
 
-    const enemyTemplate = (options) => {
+    function enemyTemplate (options) {
         return {
             id: options.id || "",
-            xPos: options.x || "",
-            yPos: options.y || "",
+            x: options.x || "",
+            y: options.y || "",
             w: options.w || "",
             h: options.h || "",
             image: options.image || enemypic1,
@@ -47,6 +47,59 @@ const initCanvas = () => {
         enemyTemplate({id: "19", x: 475, y: -200, w: 50, h: 30, image: enemypic2}),
         enemyTemplate({id: "20", x: 600, y: -200, w: 50, h: 30, image: enemypic2}),
     ];
+
+    const renderEnemies = (enemies) => {
+        for(let enemy of enemies) {
+            ctx.drawImage(enemy.image, enemy.x, enemy.y += .5, enemy.w, enemy.h);
+        }
+    }
+
+    const Launcher = function() {
+        this.y = 400,
+        this.x = ctxWidth * .5 - 25,
+        this.w = 100,
+        this.h = 100,
+        this.direccion,
+        this.bg = "white",
+        this.misiles = []
+
+        this.gameStatus = {
+            over: false,
+            message: "",
+            fillStyle: "white",
+            font: "italic bold 36px Arial, sans-serif",
+        }
+
+        this.render = () => {
+            if(this.direccion === "left") {
+                this.x -= 5;
+            }
+            else if(this.direccion === "right") {
+                this.x += 5;
+            }
+            else if(this.direccion === "downArrow") {
+                this.y += 5;
+            }
+            else if(this.direccion === "upArrow") {
+                this.y -= 5;
+            }
+
+            ctx.fillStyle = this.bg;
+            ctx.drawImage(backgroundImage, 0, 0) //fondo canvas
+            ctx.drawImage(naveImage, this.x, this.y, 100, 90); // nave aliada
+        }
+    }
+
+    let launcher = new Launcher();
+
+    const animate = () => {
+        ctx.clearRect(0, 0, ctxWidth, ctxHeight);
+        launcher.render();
+        renderEnemies(enemies);
+    }
+
+    let animateInterval = setInterval(animate, 6);
+
 }
 
 window.addEventListener("load", (event) => {
