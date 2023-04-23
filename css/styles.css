@@ -1,0 +1,59 @@
+body {
+    margin: 10px;
+    background-image: url("../imagenes/wall.jpg");
+}
+
+.container {
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.button-container {
+    display: flex;
+    gap: 0.5vw;
+    justify-content: center;
+    align-content: center;
+}
+
+.barra {
+    background-color: #000;
+    color: #fff;
+    font-size: 20px;
+    height: 40px;
+    width: 700px;
+    padding: 10px;
+    margin: 20px 10%;
+    box-sizing: border-box;
+    align-content: center;
+}
+
+#my_canvas {
+    background: #000;
+    border: #000 1px solid;
+    margin: 0 10%;
+}
+
+.boton {
+    color: #fff;
+    font-size: 25px;
+    background-color: #000;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 2px solid blue;
+    margin: 0;
+}
+
+.boton:hover {
+    background-color: rgb(116, 116, 116);
+    border: rgb(116, 116, 116) 2px solid;
+    color: black;
+}
+
+.boton:active {
+    background-color: rgba(116, 116, 116, 0.719);
+}
