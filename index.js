@@ -27,10 +27,10 @@ const initCanvas = () => {
     let enemies = [
         enemyTemplate({id: "1", x: 100, y: -20, w: 50, h: 30,}),
         enemyTemplate({id: "2", x: 225, y: -20, w: 50, h: 30,}),
-        enemyTemplate({id: "3", x: 350, y: -20, w: 80, h: 30,}),
+        enemyTemplate({id: "3", x: 300, y: -20, w: 80, h: 30,}),
         enemyTemplate({id: "4", x: 100, y: -70, w: 80, h: 30,}),
         enemyTemplate({id: "5", x: 225, y: -70, w: 50, h: 30,}),
-        enemyTemplate({id: "6", x: 350, y: -70, w: 50, h: 30,}),
+        enemyTemplate({id: "6", x: 300, y: -70, w: 50, h: 30,}),
         enemyTemplate({id: "7", x: 475, y: -70, w: 50, h: 30,}),
         enemyTemplate({id: "8", x: 600, y: -70, w: 80, h: 30,}),
         enemyTemplate({id: "9", x: 475, y: -20, w: 50, h: 30,}),
@@ -38,10 +38,10 @@ const initCanvas = () => {
 
         enemyTemplate({id: "11", x: 100, y: -220, w: 50, h: 30, image: enemypic2}),
         enemyTemplate({id: "12", x: 225, y: -220, w: 50, h: 30, image: enemypic2}),
-        enemyTemplate({id: "13", x: 350, y: -220, w: 80, h: 30, image: enemypic2}),
+        enemyTemplate({id: "13", x: 300, y: -220, w: 80, h: 30, image: enemypic2}),
         enemyTemplate({id: "14", x: 100, y: -270, w: 80, h: 30, image: enemypic2}),
         enemyTemplate({id: "15", x: 225, y: -270, w: 50, h: 30, image: enemypic2}),
-        enemyTemplate({id: "16", x: 350, y: -270, w: 50, h: 30, image: enemypic2}),
+        enemyTemplate({id: "16", x: 300, y: -270, w: 50, h: 30, image: enemypic2}),
         enemyTemplate({id: "17", x: 475, y: -270, w: 50, h: 30, image: enemypic2}),
         enemyTemplate({id: "18", x: 600, y: -270, w: 80, h: 30, image: enemypic2}),
         enemyTemplate({id: "19", x: 475, y: -200, w: 50, h: 30, image: enemypic2}),
@@ -50,13 +50,18 @@ const initCanvas = () => {
 
     const renderEnemies = (enemies) => {
         for(let enemy of enemies) {
+            //render
             ctx.drawImage(enemy.image, enemy.x, enemy.y += .5, enemy.w, enemy.h);
+            //detecta si colisiona con jugador_
+            launcher.enemyHitsPlayer(enemy);
+
         }
     }
 
     const Launcher = function() {
         this.y = 400,
         this.x = ctxWidth * .5 - 50,
+        // this.x = ctxWidth * .5,
         this.w = 100,
         this.h = 100,
         this.direccion,
@@ -119,6 +124,29 @@ const initCanvas = () => {
                     }
             }
         }
+
+        this.enemyHitsPlayer = function(enemy) {
+            if(enemy.y > ctxHeight - 50) {
+                this.gameStatus.over = true;
+                this.gameStatus.message = "¡Los enemigos han pasao!"
+            }
+            
+            if(
+                (enemy.y < this.y + 25 && enemy.y > this.y - 25) &&
+                (enemy.x < this.x + 50 && enemy.x > this.x - 50)
+            ) {
+                    this.gameStatus.over = true;
+                    this.gameStatus.message = "¡Chocao!"
+            }
+
+            if(this.gameStatus.over) {
+                clearInterval(animateInterval);
+                document.querySelector(".barra").textContent = "GameOver"
+                ctx.fillStyle = this.gameStatus.fillStyle;
+                ctx.font = this.gameStatus.font;
+                ctx.fillText(this.gameStatus.message, ctxWidth * .5 - 140, 50);
+            }
+        }
     }
     
     let launcher = new Launcher();
@@ -131,6 +159,7 @@ const initCanvas = () => {
 
     let animateInterval = setInterval(animate, 6);
 
+    //controles
     let leftBtn = document.getElementById("left-btn");
     let rightBtn = document.getElementById("right-btn")
     let fireBtn = document.getElementById("fire-btn")
@@ -140,11 +169,81 @@ const initCanvas = () => {
         launcher.misiles.push({x: launcher.x + launcher.w*.5, y: launcher.y, w: 3, h: 10});
     })
 
-    // window.addEventListener("keypress", (event) => {
-    //     if(event.code == 'Space') {
-    //         fireBtn.click()
-    //     }
-    // })
+    leftBtn.addEventListener("mousedown", (event) => {
+        launcher.direccion = "left";
+    })
+    leftBtn.addEventListener("mouseup", (event) => {
+        launcher.direccion = "";
+    })
+
+    rightBtn.addEventListener("mousedown", (event) => {
+        launcher.direccion = "right";
+    })
+    rightBtn.addEventListener("mouseup", (event) => {
+        launcher.direccion = "";
+    })
+
+    resetBtn.addEventListener("mouseup", (event) => {
+        location.reload();
+    })
+
+
+    window.addEventListener("keydown", (event) => {
+        const {key} = event;
+        console.log(event)
+        if(key == ' ') {
+            fireBtn.click()
+        }
+        if(key == "ArrowLeft") {
+            launcher.direccion = "left"
+            if(launcher.x < ctxWidth*.2 - 100) {
+                launcher.x += 0;
+                launcher.direccion = "";
+            }
+        }
+        if(key == "ArrowRight") {
+            launcher.direccion = "right"
+            if(launcher.x > ctxWidth - 110) {
+                launcher.x -= 0;
+                launcher.direccion = "";
+            }
+        }
+        if(key == "ArrowUp") {
+            launcher.direccion = "upArrow"
+            if(launcher.y < ctxHeight*.2 - 80) {
+                launcher.y += 0;
+                launcher.direccion = "";
+            }
+        }
+        if(key == "ArrowDown") {
+            launcher.direccion = "downArrow"
+            if(launcher.y > ctxHeight-110) {
+                launcher.y -= 0;
+                launcher.direccion = "";
+            }
+        }
+    })
+    window.addEventListener("keyup", (event) => {
+        const {key} = event;
+        console.log(event)
+        if(key == ' ') { }
+        if(key == "ArrowLeft") {
+            launcher.x +=0;
+            launcher.direccion = ""
+        }
+        if(key == "ArrowRight") {
+            launcher.x -=0;
+            launcher.direccion = ""
+        }
+        if(key == "ArrowUp") {
+            launcher.y +=0;
+            launcher.direccion = ""
+        }
+        if(key == "ArrowDown") {
+            launcher.y -=0;
+            launcher.direccion = ""
+        }
+    })
 
 }
 
