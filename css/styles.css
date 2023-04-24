@@ -62,3 +62,22 @@ body {
     background-color: rgba(116, 116, 116, 0.719);
     transform: scale(1.01);
 }
+
+.black-mask {
+    background-color: rgba(0, 0, 0, 0.308);
+    height: 500px;
+    width: 700px;
+    position: absolute;
+    top: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    line-break: loose;
+    line-height: 1.5;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    letter-spacing: 1;
+    color: white;
+    font-size: 54px;
+}

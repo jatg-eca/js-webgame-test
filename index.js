@@ -72,7 +72,7 @@ const initCanvas = () => {
             over: false,
             message: "",
             fillStyle: "white",
-            font: "italic bold 36px Arial, sans-serif",
+            font: "bold 30px Arial, sans-serif",
         }
 
         this.render = () => {
@@ -104,8 +104,11 @@ const initCanvas = () => {
 
             if(enemies.length === 0) {
                 clearInterval(animateInterval); // termina juego
-                ctx.font = this.gameStatus.font;
-                ctx.fillText("Has ganao", ctxWidth*.5-80, 50);
+                launcher.gameStatus.over = true;
+                document.querySelector(".black-mask").style.display = "flex";
+                document.querySelector(".black-mask").innerHTML = this.gameStatus.message || "<p>¡Has ganao! <br><br>F para reiniciar</p>";
+                // ctx.font = this.gameStatus.font;
+                // ctx.fillText("Has ganao", ctxWidth*.5-80, 50);
             }
         }
 
@@ -128,7 +131,7 @@ const initCanvas = () => {
         this.enemyHitsPlayer = function(enemy) {
             if(enemy.y > ctxHeight - 50) {
                 this.gameStatus.over = true;
-                this.gameStatus.message = "¡Los enemigos han pasao!"
+                this.gameStatus.message = "¡Los enemigos han pasao! F para reiniciar"
             }
             
             if(
@@ -136,15 +139,17 @@ const initCanvas = () => {
                 (enemy.x < this.x + 50 && enemy.x > this.x - 50)
             ) {
                     this.gameStatus.over = true;
-                    this.gameStatus.message = "¡Chocao!"
+                    this.gameStatus.message = "¡Chocao! F para reiniciar"
             }
 
             if(this.gameStatus.over) {
                 clearInterval(animateInterval);
+                document.querySelector(".black-mask").style.display = "flex";
+                document.querySelector(".black-mask").textContent = this.gameStatus.message;
                 document.querySelector(".barra").textContent = "GameOver"
-                ctx.fillStyle = this.gameStatus.fillStyle;
-                ctx.font = this.gameStatus.font;
-                ctx.fillText(this.gameStatus.message, ctxWidth * .5 - 140, 50);
+                // ctx.fillStyle = this.gameStatus.fillStyle;
+                // ctx.font = this.gameStatus.font;
+                // ctx.fillText(this.gameStatus.message, ctxWidth*.2-100, ctxHeight/2);
             }
         }
     }
@@ -183,14 +188,13 @@ const initCanvas = () => {
         launcher.direccion = "";
     })
 
-    resetBtn.addEventListener("mouseup", (event) => {
+    resetBtn.addEventListener("click", (event) => {
         location.reload();
     })
 
 
     window.addEventListener("keydown", (event) => {
         const {key} = event;
-        console.log(event)
         if(key == ' ') {
             fireBtn.click()
         }
@@ -222,10 +226,12 @@ const initCanvas = () => {
                 launcher.direccion = "";
             }
         }
+        if(launcher.gameStatus.over && key == "f") {
+            resetBtn.click();
+        }
     })
     window.addEventListener("keyup", (event) => {
         const {key} = event;
-        console.log(event)
         if(key == ' ') { }
         if(key == "ArrowLeft") {
             launcher.x +=0;
