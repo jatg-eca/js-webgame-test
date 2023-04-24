@@ -107,6 +107,10 @@ const initCanvas = () => {
                 launcher.gameStatus.over = true;
                 document.querySelector(".black-mask").style.display = "flex";
                 document.querySelector(".black-mask").innerHTML = this.gameStatus.message || "<p>¡Has ganao! <br><br>F para reiniciar</p>";
+                jsConfetti.addConfetti({
+                    confettiRadius: 4,
+                    confettiNumber: 180,
+                });
                 // ctx.font = this.gameStatus.font;
                 // ctx.fillText("Has ganao", ctxWidth*.5-80, 50);
             }
@@ -189,6 +193,7 @@ const initCanvas = () => {
     })
 
     resetBtn.addEventListener("click", (event) => {
+        jsConfetti.clearCanvas();
         location.reload();
     })
 
@@ -251,7 +256,11 @@ const initCanvas = () => {
         }
     })
 
+    let confettiCanvas = document.getElementById("confetti-canvas").getContext("2d");
+    const jsConfetti = new JSConfetti( {  confettiCanvas } )
 }
+
+// const jsConfetti = new JSConfetti({confettiCanvas});
 
 window.addEventListener("load", (event) => {
     initCanvas();
