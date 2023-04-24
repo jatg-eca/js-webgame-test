@@ -56,7 +56,7 @@ const initCanvas = () => {
 
     const Launcher = function() {
         this.y = 400,
-        this.x = ctxWidth * .5 - 25,
+        this.x = ctxWidth * .5 - 50,
         this.w = 100,
         this.h = 100,
         this.direccion,
@@ -87,9 +87,40 @@ const initCanvas = () => {
             ctx.fillStyle = this.bg;
             ctx.drawImage(backgroundImage, 0, 0) //fondo canvas
             ctx.drawImage(naveImage, this.x, this.y, 100, 90); // nave aliada
+
+            for(let idx = 0; idx<this.misiles.length; idx++) {
+                let misil = this.misiles[idx]
+                ctx.fillRect(misil.x, misil.y -= 5, misil.w, misil.h); //direccion misil
+                this.hitDetect(misil, idx);
+                if(misil.y <= 0) {
+                    this.misiles.splice(idx, 1);
+                }
+            }
+
+            if(enemies.length === 0) {
+                clearInterval(animateInterval); // termina juego
+                ctx.font = this.gameStatus.font;
+                ctx.fillText("Has ganao", ctxWidth*.5-80, 50);
+            }
+        }
+
+        //funcion de impactos de misil
+        this.hitDetect = function(misil, misilIdx) {
+            for(let i = 0; i < enemies.length; i++) {
+                let enemy = enemies[i];
+                if((misil.x + misil.w) >= enemy.x &&
+                    misil.x <= enemy.x + enemy.w && 
+                    misil.y >= enemy.y &&
+                    misil.y <= enemy.y + enemy.h) {
+                        this.misiles.splice(this.misiles[misilIdx], 1); // eliminar misil
+                        enemies.splice(i, 1); //eliminar nave enemiga
+                        document.querySelector(".barra")
+                        .textContent = "Enemigos destruidos: " + (20 - (enemies.length))  + " " ;
+                    }
+            }
         }
     }
-
+    
     let launcher = new Launcher();
 
     const animate = () => {
@@ -99,6 +130,21 @@ const initCanvas = () => {
     }
 
     let animateInterval = setInterval(animate, 6);
+
+    let leftBtn = document.getElementById("left-btn");
+    let rightBtn = document.getElementById("right-btn")
+    let fireBtn = document.getElementById("fire-btn")
+    let resetBtn = document.getElementById("reset-btn")
+
+    fireBtn.addEventListener("click", (event) => {
+        launcher.misiles.push({x: launcher.x + launcher.w*.5, y: launcher.y, w: 3, h: 10});
+    })
+
+    // window.addEventListener("keypress", (event) => {
+    //     if(event.code == 'Space') {
+    //         fireBtn.click()
+    //     }
+    // })
 
 }
 
